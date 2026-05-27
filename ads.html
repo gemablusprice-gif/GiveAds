@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>الإعلانات - GiveAds</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="ads.css"/>
+
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<div class="header">
+
+<div class="logo">
+Give<span>Ads</span>
+</div>
+
+<div class="actions">
+
+<button class="create-btn" onclick="goCreate()">
+➕ نشر إعلان
+</button>
+
+<button class="profile-btn" onclick="goProfile()">
+👤 حسابي
+</button>
+
+</div>
+
+</div>
+
+<!-- SEARCH -->
+
+<div class="search">
+
+<input 
+type="text"
+placeholder="ابحث عن إعلان..."
+id="searchInput"
+onkeyup="searchAds()"
+>
+
+</div>
+
+<!-- ADS -->
+
+<div class="container" id="adsContainer">
+
+<div class="empty">
+جارٍ تحميل الإعلانات...
+</div>
+
+</div>
+<script type="module" src="ads.js"></script>
+</body>
+</html>
