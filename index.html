@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GiveAds - منصة الإعلانات الذكية</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Cairo', sans-serif;
+}
+
+body{
+background:#0f172a;
+color:white;
+}
+
+/* Navbar */
+nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 30px;
+background:#111827;
+position:sticky;
+top:0;
+}
+
+.logo{
+font-size:22px;
+font-weight:900;
+color:#22c55e;
+cursor:pointer;
+}
+
+.logo span{
+color:#facc15;
+}
+
+nav ul{
+display:flex;
+gap:15px;
+list-style:none;
+}
+
+nav ul li{
+cursor:pointer;
+padding:8px 12px;
+border-radius:8px;
+transition:0.3s;
+}
+
+nav ul li:hover{
+background:#1f2937;
+}
+
+/* Hero */
+.hero{
+text-align:center;
+padding:80px 20px;
+}
+
+.hero h1{
+font-size:40px;
+margin-bottom:15px;
+}
+
+.hero p{
+color:#cbd5e1;
+margin-bottom:25px;
+}
+
+.btn{
+padding:12px 20px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+font-weight:bold;
+margin:5px;
+transition:0.3s;
+}
+
+.btn-green{
+background:#22c55e;
+color:white;
+}
+
+.btn-yellow{
+background:#facc15;
+color:black;
+}
+
+.btn:hover{
+transform:scale(1.05);
+}
+
+/* Cards */
+.container{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+padding:40px;
+}
+
+.card{
+background:#1e293b;
+padding:20px;
+border-radius:15px;
+transition:0.3s;
+cursor:pointer;
+}
+
+.card:hover{
+transform:translateY(-5px);
+}
+
+.card h3{
+margin-bottom:10px;
+color:#22c55e;
+}
+
+/* Footer */
+footer{
+text-align:center;
+padding:20px;
+background:#111827;
+margin-top:40px;
+color:#94a3b8;
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- NAV -->
+<nav>
+<div class="logo" onclick="goHome()">Give<span>Ads</span></div>
+
+<ul>
+<li onclick="go('index.html')">الرئيسية</li>
+<li onclick="go('ads.html')">الإعلانات</li>
+<li onclick="go('create-ads.html')">أنشر إعلان</li>
+<li onclick="go('login.html')">تسجيل الدخول</li>
+<li onclick="go('profile.html')">حسابي</li>
+</ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+<h1>منصة تربط أصحاب الإعلانات بالمعلنين</h1>
+<p>انشر إعلانك أو اربح من الترويج بسهولة وبنظام ذكي</p>
+
+<button class="btn btn-green" onclick="go('ads.html')">ابدأ الآن</button>
+<button class="btn btn-yellow" onclick="go('create-ads.html')">نشر إعلان</button>
+</section>
+
+<!-- FEATURES -->
+<section class="container">
+
+<div class="card" onclick="go('create-ads.html')">
+<h3>📢 نشر إعلان</h3>
+<p>انشر إعلانك مع صور وفيديو وحدد ميزانيتك بسهولة.</p>
+</div>
+
+<div class="card" onclick="go('wallet.html')">
+<h3>💰 اربح من الترويج</h3>
+<p>اعمل كمسوق وابدأ في الربح من الإعلانات.</p>
+</div>
+
+<div class="card" onclick="go('ads.html')">
+<h3>⚡ نظام ذكي</h3>
+<p>ربط مباشر بين أصحاب المشاريع والمسوقين.</p>
+</div>
+
+<div class="card" onclick="go('profile.html')">
+<h3>📊 لوحة تحكم</h3>
+<p>إدارة الإعلانات، الرصيد، والتقييمات.</p>
+</div>
+
+</section>
+
+<!-- FOOTER -->
+<footer>
+© 2026 GiveAds - جميع الحقوق محفوظة
+</footer>
+
+<script>
+
+// تنقل بين الصفحات
+function go(page){
+window.location.href = page;
+}
+
+function goHome(){
+window.location.href = "index.html";
+}
+
+</script>
+
+</body>
+</html>
