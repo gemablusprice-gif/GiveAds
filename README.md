@@ -1,2 +1,0 @@
-# GiveAds
-main
