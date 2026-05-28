@@ -250,52 +250,25 @@ adsList.innerHTML = `
 }
 
 
-// 💬 تحميل الرسائل الحديثة
-
+// 💬 تحميل الرسائل (مطور)
 async function loadMessages(user){
 
-const popupMessages =
-document.getElementById("popupMessages");
-
-const msgCount =
-document.getElementById("msgCount");
-
-// تحقق من العناصر
+const popupMessages = document.getElementById("popupMessages");
+const msgCount = document.getElementById("msgCount");
 
 if(!popupMessages || !msgCount) return;
 
-// شاشة تحميل
-
-popupMessages.innerHTML = `
-
-<div class="empty">
-جارٍ تحميل الرسائل...
-</div>
-
-`;
+popupMessages.innerHTML = `<div class="empty">جارٍ تحميل الرسائل...</div>`;
 
 try{
 
-// جلب المحادثات
-
-const chatsSnap =
-await getDocs(collection(db,"chats"));
-
-popupMessages.innerHTML = "";
-
-let count = 0;
-
-// لا توجد محادثات
+const chatsSnap = await getDocs(collection(db,"chats"));
 
 if(chatsSnap.empty){
-
-popupMessages.innerHTML = `
-
-<div class="empty">
-لا توجد رسائل حالياً
-</div>
-
-`;
+popupMessages.innerHTML = `<div class="empty">لا توجد رسائل</div>`;
+msgCount.innerText = "0";
+return;
+}
 
 msgCount.innerText = "0";
 
