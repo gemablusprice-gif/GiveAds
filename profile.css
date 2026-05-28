@@ -708,3 +708,10 @@ left:-110px;
 }
 
 }
+.messages-popup{
+display:none;
+}
+
+.messages-popup.show{
+display:block;
+}
