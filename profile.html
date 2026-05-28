@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الملف الشخصي - GiveAds</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="profile.css"/>
+</head>
+
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo-top" onclick="goHome()">
+    <span class="give">Give</span><span class="ads">Ads</span>
+  </div>
+  
+  <div class="notification">
+    <button class="bell" onclick="toggleMessages()">
+      🔔
+      <span id="msgCount">0</span>
+    </button>
+    
+    <div class="messages-popup" id="messagesPopup">
+      <div class="popup-header">
+        <h3>الرسائل</h3>
+        <button class="close-btn" onclick="toggleMessages()">✕</button>
+      </div>
+      <div id="popupMessages">
+        <div class="empty">
+          <div class="empty-icon">📭</div>
+          لا توجد رسائل
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- PROFILE CONTAINER -->
+<div class="profile">
+
+  <!-- USER CARD -->
+  <div class="card user-card">
+    <div class="user-info">
+      <div class="avatar" id="avatar">👤</div>
+      
+      <div class="user-text">
+        <h2 id="username">مستخدم جديد</h2>
+        <p id="email">user@email.com</p>
+        <span class="status">✓ حساب نشط</span>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-icon">💰</div>
+        <div class="stat-number" id="balance">0</div>
+        <div class="stat-label">الرصيد (ريال)</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-icon">📢</div>
+        <div class="stat-number" id="adsCount">0</div>
+        <div class="stat-label">الإعلانات</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-icon">⭐</div>
+        <div class="stat-number" id="rating">5.0</div>
+        <div class="stat-label">التقييم</div>
+      </div>
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="buttons">
+      <button class="green" onclick="addMoney()">💰 إضافة رصيد</button>
+      <button class="black" onclick="createAd()">📢 نشر إعلان</button>
+      <button class="yellow" onclick="editProfile()">⚙️ رصيدي</button>
+      <button class="red" onclick="logout()">🚪 تسجيل خروج</button>
+    </div>
+  </div>
+
+  <!-- DIVIDER -->
+  <div class="divider"></div>
+
+  <!-- MY ADS SECTION -->
+  <div class="card ads-section">
+    <h2 class="ads-title">📢 إعلاناتي</h2>
+    
+    <div class="ads" id="adsList">
+      <div class="empty">
+        <div class="empty-icon">📭</div>
+        <p>لم تنشر أي إعلانات بعد</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script type="module" src="profile.js"></script>
+<script type="module">
+
+import { auth, db } from "./firebase.js";
+
+import {
+onAuthStateChanged,
+signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+doc,
+getDoc,
+collection,
+getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+// ⏳ إخفاء التحميل
+function hideLoading(){
+const loader = document.getElementById("loadingScreen");
+if(loader) loader.style.display = "none";
+}
+
+// 🔥 تحميل بيانات المستخدم
+async function loadUser(user){
+
+const ref = doc(db, "users", user.uid);
+const snap = await getDoc(ref);
+
+if(snap.exists()){
+
+const data = snap.data();
+
+document.getElementById("username").innerText =
+data.name || "مستخدم";
+
+document.getElementById("email").innerText =
+data.email || "";
+
+document.getElementById("balance").innerText =
+(data.balance || 0) + "$";
+
+// صورة المستخدم
+let avatar = document.getElementById("avatar");
+
+if(data.photo){
+avatar.style.backgroundImage = `url(${data.photo})`;
+avatar.innerHTML = "";
+}
+
+}
+
+}
+
+
+// 🔥 تحميل إعلانات المستخدم
+async function loadMyAds(user){
+
+const adsList = document.getElementById("adsList");
+const snap = await getDocs(collection(db,"ads"));
+
+adsList.innerHTML = "";
+
+let count = 0;
+
+snap.forEach((docItem)=>{
+
+const ad = docItem.data();
+
+if(ad.userId === user.uid){
+
+count++;
+
+adsList.innerHTML += `
+<div class="ad">
+<p>📢 ${ad.title || "إعلان"}</p>
+<span>💰 ${ad.budget || 0}$ | ${ad.type || ""}</span>
+</div>
+`;
+
+}
+
+});
+
+document.getElementById("adsCount").innerText = count;
+
+if(count === 0){
+adsList.innerHTML = `
+<div class="empty">لا توجد إعلانات</div>
+`;
+}
+
+}
+
+
+// 💬 تحميل الرسائل
+async function loadMessages(user){
+
+const messagesList = document.getElementById("messagesList");
+const snap = await getDocs(collection(db,"chats"));
+
+messagesList.innerHTML = "";
+
+let found = false;
+
+snap.forEach((docItem)=>{
+
+const chat = docItem.data();
+
+if(chat.users && chat.users.includes(user.uid)){
+
+found = true;
+
+const otherUser = chat.users.find(id => id !== user.uid);
+
+messagesList.innerHTML += `
+<div class="ad">
+<p>💬 محادثة جديدة</p>
+<span>${otherUser}</span>
+<br><br>
+<button class="green" onclick="openChat('${otherUser}')">
+فتح المحادثة
+</button>
+</div>
+`;
+
+}
+
+});
+
+if(!found){
+messagesList.innerHTML = `
+<div class="empty">لا توجد رسائل حالياً</div>
+`;
+}
+
+}
+
+
+// 🔐 تسجيل الدخول
+onAuthStateChanged(auth, async (user)=>{
+
+if(!user){
+window.location.href = "login.html";
+return;
+}
+
+// ⏳ تأخير بسيط (شكل احترافي)
+await new Promise(r => setTimeout(r, 800));
+
+// 🔥 تحميل البيانات
+await loadUser(user);
+await loadMyAds(user);
+await loadMessages(user);
+
+// ❌ إخفاء التحميل
+hideLoading();
+
+});
+
+
+// 🚪 تسجيل خروج
+window.logout = function(){
+
+signOut(auth).then(()=>{
+
+alert("تم تسجيل الخروج");
+window.location.href = "login.html";
+
+});
+
+}
+
+
+// ➕ إنشاء إعلان
+window.createAd = function(){
+window.location.href = "create-ads.html";
+}
+
+
+// 💬 فتح الشات
+window.openChat = function(uid){
+window.location.href = "chat.html?uid=" + uid;
+}
+
+
+// 💰 رصيد
+window.addMoney = function(){
+alert("قريباً نظام الدفع");
+}
+
+
+// ⚙️ تعديل الحساب
+window.editProfile = function(){
+window.location.href = "wallet.html";
+}
+
+</script>
+</body>
+</html>

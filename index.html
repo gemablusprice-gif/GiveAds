@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="ads.jpg">
+<title>GiveAds - منصة الإعلانات الذكية</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="index.css"/>
+
+<style>
+/* LOGO FIX */
+.logo{
+display:flex;
+gap:4px;
+font-size:32px;
+font-weight:900;
+cursor:pointer;
+}
+
+.logo .give{
+color:#facc15;
+}
+
+.logo .ads{
+color:#22c55e;
+}
+</style>
+<title>GiveAds - منصة إعلانات ممولة وربح المال من الإنترنت</title>
+
+<meta name="description" content="منصة إعلانات ممولة لربط المعلنين بأصحاب المواقع والتطبيقات. أنشر إعلانك أو اربح من الإعلانات بسهولة عبر الإنترنت.">
+
+<meta name="keywords" content="
+منصة إعلانات, إعلانات ممولة, شراء إعلانات, التسويق الإلكتروني,
+advertising platform, ads network, sponsored ads,
+make money online, ad marketplace
+">
+
+<meta name="author" content="GiveAds">
+
+<meta name="robots" content="index, follow">
+</head>
+
+<body>
+
+<!-- NAV -->
+<!-- NAV -->
+<nav>
+  <div class="nav-container">
+
+    <!-- LOGO -->
+    <div class="logo" onclick="goHome()">
+      <span class="give">Ads</span><span class="ads">Give</span>
+    </div>
+
+    <!-- MENU -->
+    <div class="nav-box">
+      <ul>
+
+        <li onclick="go('index.html')">الرئيسية</li>
+        <li onclick="go('ads.html')">الإعلانات</li>
+        <li onclick="go('create-ads.html')">أنشر إعلان</li>
+
+        <!-- زر مميز -->
+        <li class="login-btn" onclick="go('login.html')">
+          تسجيل الدخول
+        </li>
+
+        <li onclick="go('profile.html')">حسابي</li>
+
+      </ul>
+    </div>
+
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+<h1>منصة تربط أصحاب الإعلانات بالمعلنين</h1>
+<p>انشر إعلانك أو اربح من الترويج بسهولة وبنظام ذكي</p>
+
+<div class="btn-group">
+  <button class="btn btn-green" onclick="go('ads.html')">ابدأ الآن</button>
+  <button class="btn btn-yellow" onclick="go('create-ads.html')">نشر إعلان</button>
+</div>
+</section>
+
+<!-- FEATURES -->
+<section class="container">
+
+<div class="card" onclick="go('create-ads.html')">
+<h3>📢 نشر إعلان</h3>
+<p>انشر إعلانك مع صور وفيديو وحدد ميزانيتك بسهولة.</p>
+</div>
+
+<div class="card" onclick="go('wallet.html')">
+<h3>💰 اربح من الترويج</h3>
+<p>اعمل كمسوق وابدأ في الربح من الإعلانات.</p>
+</div>
+
+<div class="card" onclick="go('ads.html')">
+<h3>⚡ نظام ذكي</h3>
+<p>ربط مباشر بين أصحاب المشاريع والمسوقين.</p>
+</div>
+
+<div class="card" onclick="go('profile.html')">
+<h3>📊 لوحة تحكم</h3>
+<p>إدارة الإعلانات، الرصيد، والتقييمات.</p>
+</div>
+
+</section>
+
+<!-- BENEFITS -->
+<section class="container">
+
+<div class="card">
+<h3>🚀 لماذا GiveAds؟</h3>
+<p>منصة تربط بين أصحاب الإعلانات والمسوقين بطريقة ذكية وسريعة بدون تعقيد.</p>
+</div>
+
+<div class="card">
+<h3>💡 زيادة أرباحك</h3>
+<p>تقدر تكسب من الترويج أو نشر الإعلانات بسهولة وبنظام عادل.</p>
+</div>
+
+<div class="card">
+<h3>📊 إدارة كاملة</h3>
+<p>لوحة تحكم لمتابعة الإعلانات، الأرباح، والأداء في مكان واحد.</p>
+</div>
+
+<div class="card">
+<h3>⚡ سرعة وذكاء</h3>
+<p>نظام يربط الإعلانات بالمستخدمين المناسبين تلقائيًا.</p>
+</div>
+
+</section>
+
+<!-- FOOTER -->
+<footer>
+© 2026 GiveAds - جميع الحقوق محفوظة
+</footer>
+
+<script>
+function go(page){
+window.location.href = page;
+}
+
+function goHome(){
+window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>

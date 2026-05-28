@@ -1,0 +1,313 @@
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Cairo',sans-serif;
+}
+
+:root{
+
+--bg:#ffffff;
+--bg2:#f3f4f6;
+
+--primary:#111111;
+--primary2:#000000;
+
+--text:#0f172a;
+--muted:#64748b;
+
+--border:rgba(0,0,0,0.10);
+
+}
+
+/* BODY */
+
+body{
+
+background:linear-gradient(180deg,#ffffff,#f3f4f6);
+
+color:var(--text);
+
+height:100vh;
+
+overflow:hidden;
+
+}
+
+/* SCROLL */
+
+::-webkit-scrollbar{
+width:8px;
+}
+
+::-webkit-scrollbar-track{
+background:#f3f4f6;
+}
+
+::-webkit-scrollbar-thumb{
+background:linear-gradient(180deg,#111,#333);
+border-radius:20px;
+}
+
+/* HEADER */
+
+.header{
+
+position:sticky;
+top:0;
+z-index:999;
+
+padding:18px 20px;
+
+text-align:center;
+
+font-size:20px;
+font-weight:900;
+
+background:#ffffff;
+
+border-bottom:1px solid var(--border);
+
+letter-spacing:1px;
+
+color:#111;
+}
+
+/* CHAT */
+
+.chat-box{
+
+height:calc(100vh - 150px);
+
+overflow-y:auto;
+
+padding:25px;
+
+display:flex;
+
+flex-direction:column;
+
+gap:16px;
+}
+
+/* MESSAGE */
+
+.msg{
+
+padding:15px 18px;
+
+border-radius:22px;
+
+max-width:75%;
+
+background:#f8fafc;
+
+border:1px solid rgba(0,0,0,0.08);
+
+line-height:1.8;
+
+font-size:15px;
+
+color:#0f172a;
+
+position:relative;
+
+animation:fadeIn 0.3s ease;
+
+word-break:break-word;
+
+box-shadow:0 8px 20px rgba(0,0,0,0.05);
+}
+
+/* MY MESSAGE */
+
+.me{
+
+align-self:flex-end;
+
+background:#111;
+
+color:#fff;
+
+border:none;
+
+box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+/* OTHER MESSAGE */
+
+.other{
+
+align-self:flex-start;
+background:#ffffff;
+}
+
+/* INPUT AREA */
+
+.input-box{
+
+position:fixed;
+
+bottom:0;
+left:0;
+
+width:100%;
+
+display:flex;
+
+align-items:center;
+
+gap:12px;
+
+padding:15px 20px;
+
+background:#ffffff;
+
+border-top:1px solid var(--border);
+}
+
+/* INPUT */
+
+input{
+
+flex:1;
+
+padding:16px 20px;
+
+border-radius:18px;
+
+border:1px solid rgba(0,0,0,0.10);
+
+background:#ffffff;
+
+color:#111;
+
+font-size:15px;
+
+outline:none;
+
+transition:0.35s;
+}
+
+/* FOCUS */
+
+input:focus{
+
+border-color:#111;
+
+box-shadow:0 0 0 4px rgba(0,0,0,0.08);
+}
+
+/* PLACEHOLDER */
+
+input::placeholder{
+color:#94a3b8;
+}
+
+/* BUTTON */
+
+button{
+
+padding:15px 22px;
+
+border:none;
+
+border-radius:18px;
+
+cursor:pointer;
+
+font-weight:800;
+
+font-size:15px;
+
+background:#111;
+
+color:#fff;
+
+transition:0.35s;
+
+position:relative;
+
+overflow:hidden;
+
+box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+/* SHINE */
+
+button::before{
+
+content:"";
+
+position:absolute;
+
+top:0;
+left:-100%;
+
+width:100%;
+height:100%;
+
+background:linear-gradient(
+90deg,
+transparent,
+rgba(255,255,255,0.15),
+transparent
+);
+
+transition:0.6s;
+}
+
+button:hover::before{
+left:100%;
+}
+
+/* HOVER */
+
+button:hover{
+transform:translateY(-3px) scale(1.03);
+}
+
+/* ANIMATION */
+
+@keyframes fadeIn{
+from{opacity:0;transform:translateY(10px);}
+to{opacity:1;transform:translateY(0);}
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+.chat-box{
+padding:18px;
+}
+
+.msg{
+max-width:88%;
+font-size:14px;
+}
+
+.input-box{
+padding:12px;
+gap:10px;
+}
+
+input{
+padding:14px 16px;
+font-size:14px;
+}
+
+button{
+padding:14px 18px;
+font-size:14px;
+}
+}
+.give{
+color:#f8ad20;
+font-size: x-large;
+}
+
+.ads{
+color:#21720d;
+font-size: x-large;
+}

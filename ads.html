@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>الإعلانات - GiveAds</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="ads.css"/>
+
+</head>
+
+<body>
+
+<!-- TOPBAR -->
+<nav class="topbar">
+
+  <div class="logo" onclick="goHome()">
+    <span class="ads">Ads</span>
+    <span class="give">Give</span>
+  </div>
+
+  <div class="nav-actions">
+
+    <button class="create-btn" onclick="goCreate()">
+      ➕ نشر إعلان
+    </button>
+
+    <button class="profile-btn" onclick="goProfile()">
+      👤 حسابي
+    </button>
+
+  </div>
+
+</nav>
+
+<!-- HEADER -->
+<div class="header">
+
+  <h1>
+    اكتشف أفضل الإعلانات في <span>GiveAds</span>
+  </h1>
+
+  <p class="header-subtitle">
+    ابحث عن خدمات التسويق، التصميم، الفيديو، والسوشيال ميديا بسهولة
+  </p>
+
+</div>
+
+<!-- SEARCH & FILTER -->
+<div class="search-section">
+
+  <!-- SEARCH -->
+  <div class="search-container">
+
+    <input 
+      type="text"
+      placeholder="ابحث عن إعلان..."
+      id="searchInput"
+      onkeyup="filterAds()"
+      class="search-input"
+    >
+
+    <span class="search-icon">🔍</span>
+
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filter-container">
+
+    <button class="filter-btn active" onclick="filterByType('')">
+      📊 الكل
+    </button>
+
+    <button class="filter-btn" onclick="filterByType('social')">
+      📱 سوشيال
+    </button>
+
+    <button class="filter-btn" onclick="filterByType('design')">
+      🎨 تصميم
+    </button>
+
+    <button class="filter-btn" onclick="filterByType('marketing')">
+      📈 تسويق
+    </button>
+
+    <button class="filter-btn" onclick="filterByType('video')">
+      🎬 فيديو
+    </button>
+
+  </div>
+
+</div>
+
+<!-- ADS -->
+<div class="container" id="adsContainer">
+
+  <div class="empty">
+
+    <div class="empty-icon">📭</div>
+
+    <p>جارٍ تحميل الإعلانات...</p>
+
+  </div>
+
+</div>
+
+<script type="module" src="ads.js"></script>
+<script type="module">
+import { db } from "./firebase.js";
+
+import {
+  collection,
+  getDocs,
+  query,
+  orderBy
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// ===========================
+// VARIABLES
+// ===========================
+
+let currentFilter = '';
+let allAds = [];
+
+// ===========================
+// LOAD ADS FROM FIREBASE
+// ===========================
+
+async function loadAds(){
+
+  const container = document.getElementById("adsContainer");
+
+  try{
+
+    container.innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">⏳</div>
+        <p>جارٍ تحميل الإعلانات...</p>
+      </div>
+    `;
+
+    // ترتيب الإعلانات من الأحدث للأقدم
+    const q = query(
+      collection(db, "ads"),
+      orderBy("createdAt", "desc")
+    );
+
+    const querySnapshot = await getDocs(q);
+
+    allAds = [];
+
+    querySnapshot.forEach((doc) => {
+
+      const data = doc.data();
+
+      allAds.push({
+        id: doc.id,
+        title: data.title || "",
+        description: data.description || "",
+        type: data.type || "social",
+        budget: data.budget || 0,
+        rating: data.rating || 5,
+        views: data.views || 0,
+        userName: data.userName || "مستخدم",
+        date: formatDate(data.createdAt),
+        image: data.image || ""
+      });
+
+    });
+
+    // عرض الإعلانات
+    displayAds();
+
+  }
+
+  catch(error){
+
+    console.error(error);
+
+    container.innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">❌</div>
+        <p>حدث خطأ أثناء تحميل الإعلانات</p>
+      </div>
+    `;
+
+  }
+
+}
+
+// ===========================
+// FILTER BY TYPE
+// ===========================
+
+window.filterByType = function(type){
+
+  currentFilter = type;
+
+  // تحديث الأزرار النشطة
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+
+  event.target.classList.add('active');
+
+  displayAds();
+
+}
+
+// ===========================
+// SEARCH FILTER
+// ===========================
+
+window.filterAds = function(){
+  displayAds();
+}
+
+// ===========================
+// DISPLAY ADS
+// ===========================
+
+function displayAds(){
+
+  const container = document.getElementById("adsContainer");
+
+  const searchText = document
+    .getElementById("searchInput")
+    .value
+    .toLowerCase();
+
+  let filteredAds = allAds.filter(ad => {
+
+    const matchesType =
+      !currentFilter || ad.type === currentFilter;
+
+    const matchesSearch =
+      !searchText ||
+      ad.title.toLowerCase().includes(searchText) ||
+      ad.description.toLowerCase().includes(searchText);
+
+    return matchesType && matchesSearch;
+
+  });
+
+  // لا يوجد إعلانات
+  if(filteredAds.length === 0){
+
+    container.innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">📭</div>
+        <p>لا توجد إعلانات حالياً</p>
+      </div>
+    `;
+
+    return;
+  }
+
+  // عرض الإعلانات
+  container.innerHTML = filteredAds.map(ad => `
+
+    <div class="ad-card" onclick="viewAd('${ad.id}')">
+
+      <div class="ad-image">
+
+        ${
+          ad.image
+          ?
+          `<img src="${ad.image}" alt="${ad.title}">`
+          :
+          getTypeIcon(ad.type)
+        }
+
+      </div>
+
+      <div class="ad-body">
+
+        <span class="ad-badge badge-${ad.type}">
+          ${getTypeName(ad.type)}
+        </span>
+
+        <h3 class="ad-title">
+          ${ad.title}
+        </h3>
+
+        <p class="ad-description">
+          ${ad.description}
+        </p>
+
+        <div class="ad-meta">
+
+          <span class="meta-item">
+            ⭐ ${ad.rating}
+          </span>
+
+          <span class="meta-item">
+            👁️ ${ad.views}
+          </span>
+
+          <span class="meta-item">
+            📅 ${ad.date}
+          </span>
+
+        </div>
+
+        <div class="ad-user">
+          👤 ${ad.userName}
+        </div>
+
+        <div class="ad-footer">
+
+          <span class="ad-price">
+            $${ad.budget}
+          </span>
+
+          <button class="ad-btn">
+            عرض الإعلان
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  `).join('');
+
+}
+
+// ===========================
+// TYPE NAME
+// ===========================
+
+function getTypeName(type){
+
+  const types = {
+
+    social: '📱 سوشيال ميديا',
+
+    design: '🎨 تصميم',
+
+    marketing: '📈 تسويق',
+
+    video: '🎬 فيديو'
+
+  };
+
+  return types[type] || 'إعلان';
+
+}
+
+// ===========================
+// TYPE ICON
+// ===========================
+
+function getTypeIcon(type){
+
+  const icons = {
+
+    social: '📱',
+
+    design: '🎨',
+
+    marketing: '📈',
+
+    video: '🎬'
+
+  };
+
+  return `
+    <div class="icon-placeholder">
+      ${icons[type] || '📢'}
+    </div>
+  `;
+
+}
+
+// ===========================
+// FORMAT DATE
+// ===========================
+
+function formatDate(dateString){
+
+  if(!dateString) return '';
+
+  const date = new Date(dateString);
+
+  return date.toLocaleDateString("ar-EG", {
+
+    year: "numeric",
+    month: "short",
+    day: "numeric"
+
+  });
+
+}
+
+// ===========================
+// VIEW AD
+// ===========================
+
+window.viewAd = function(id){
+
+  // صفحة الإعلان الكامل
+  window.location.href = `ad.html?id=${id}`;
+
+}
+
+// ===========================
+// NAVIGATION
+// ===========================
+
+window.goHome = function(){
+  window.location.href = "index.html";
+}
+
+window.goCreate = function(){
+  window.location.href = "create-ads.html";
+}
+
+window.goProfile = function(){
+  window.location.href = "profile.html";
+}
+
+// ===========================
+// START
+// ===========================
+
+window.addEventListener("load", () => {
+  loadAds();
+});
+</script>
+</body>
+</html>

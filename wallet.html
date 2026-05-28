@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المحفظة - GiveAds</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="wallet.css"/>
+</head>
+
+<body>
+
+<div class="header">
+<h1>المحفظة - <span>GiveAds</span></h1>
+</div>
+
+<div class="container">
+
+<!-- BALANCE -->
+<div class="card balance-box">
+<h2 id="balance">0$</h2>
+<p>رصيدك الحالي</p>
+
+<div class="buttons">
+<button class="green" onclick="addMoney()">إضافة رصيد</button>
+<button class="red" onclick="withdrawMoney()">سحب رصيد</button>
+<button class="blue" onclick="goHome()">الرئيسية</button>
+</div>
+</div>
+
+<!-- TRANSACTIONS -->
+<div class="card">
+<h3>سجل العمليات</h3>
+
+<div id="transactions">
+
+<div class="transaction">
+<span>💰 إضافة رصيد</span>
+<span class="status-plus">+10$</span>
+</div>
+
+<div class="transaction">
+<span>📢 إعلان مدفوع</span>
+<span class="status-minus">-5$</span>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script type="module" src="wallet.js"></script>
+</body>
+</html>
