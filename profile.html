@@ -114,18 +114,39 @@ user@email.com
 
 </div>
 
-<!-- MESSAGES -->
 
-<div class="card">
+<!-- NOTIFICATION BELL -->
 
-<h2>
-💬 الرسائل
-</h2>
+<div class="topbar">
 
-<div class="ads" id="messagesList">
+<div class="logo-top">
+GiveAds
+</div>
+
+<div class="notification">
+
+<button class="bell" onclick="toggleMessages()">
+
+🔔
+
+<span id="msgCount">
+0
+</span>
+
+</button>
+
+<div class="messages-popup" id="messagesPopup">
+
+<h3>
+الرسائل
+</h3>
+
+<div id="popupMessages">
 
 <div class="empty">
-لا توجد رسائل حالياً
+لا توجد رسائل
+</div>
+
 </div>
 
 </div>
