@@ -178,39 +178,31 @@ const loader = document.getElementById("loadingScreen");
 if(loader) loader.style.display = "none";
 }
 
-// 🔥 تحميل بيانات المستخدم
+
+// 🔥 بيانات المستخدم
 async function loadUser(user){
 
-const ref = doc(db, "users", user.uid);
+const ref = doc(db,"users",user.uid);
 const snap = await getDoc(ref);
 
-if(snap.exists()){
+if(!snap.exists()) return;
 
 const data = snap.data();
 
-document.getElementById("username").innerText =
-data.name || "مستخدم";
+document.getElementById("username").innerText = data.name || "مستخدم";
+document.getElementById("email").innerText = data.email || "";
+document.getElementById("balance").innerText = (data.balance || 0) + "$";
 
-document.getElementById("email").innerText =
-data.email || "";
-
-document.getElementById("balance").innerText =
-(data.balance || 0) + "$";
-
-// صورة المستخدم
 let avatar = document.getElementById("avatar");
 
 if(data.photo){
 avatar.style.backgroundImage = `url(${data.photo})`;
 avatar.innerHTML = "";
 }
-
-}
-
 }
 
 
-// 🔥 تحميل إعلانات المستخدم
+// 🔥 الإعلانات
 async function loadMyAds(user){
 
 const adsList = document.getElementById("adsList");
@@ -220,12 +212,10 @@ adsList.innerHTML = "";
 
 let count = 0;
 
-snap.forEach((docItem)=>{
-
+snap.forEach(docItem=>{
 const ad = docItem.data();
 
 if(ad.userId === user.uid){
-
 count++;
 
 adsList.innerHTML += `
@@ -234,23 +224,18 @@ adsList.innerHTML += `
 <span>💰 ${ad.budget || 0}$ | ${ad.type || ""}</span>
 </div>
 `;
-
 }
-
 });
 
 document.getElementById("adsCount").innerText = count;
 
 if(count === 0){
-adsList.innerHTML = `
-<div class="empty">لا توجد إعلانات</div>
-`;
+adsList.innerHTML = `<div class="empty">لا توجد إعلانات</div>`;
 }
-
 }
 
 
-// 💬 تحميل الرسائل (مطور)
+// 💬 الرسائل (مصححة 100%)
 async function loadMessages(user){
 
 const popupMessages = document.getElementById("popupMessages");
@@ -270,173 +255,74 @@ msgCount.innerText = "0";
 return;
 }
 
-msgCount.innerText = "0";
-
-return;
-
-}
+let count = 0;
+popupMessages.innerHTML = "";
 
 // loop
-
 for(const chatDoc of chatsSnap.docs){
 
 const chat = chatDoc.data();
 
-// تحقق من users
-
-if(
-!chat.users ||
-!Array.isArray(chat.users)
-) continue;
-
-// هل المستخدم داخل المحادثة
-
-if(chat.users.includes(user.uid)){
+if(!chat.users || !chat.users.includes(user.uid)) continue;
 
 count++;
 
-// المستخدم الآخر
-
-const otherUserId =
-chat.users.find(id => id !== user.uid);
-
-// جلب بيانات المستخدم
+const otherUserId = chat.users.find(id => id !== user.uid);
 
 let senderName = "مستخدم";
 let senderEmail = "";
 let senderPhoto = "";
 
-// users collection
-
 try{
-
-const userRef =
-doc(db,"users",otherUserId);
-
-const userSnap =
-await getDoc(userRef);
+const userSnap = await getDoc(doc(db,"users",otherUserId));
 
 if(userSnap.exists()){
-
-const userData =
-userSnap.data();
-
-senderName =
-userData.name || "مستخدم";
-
-senderEmail =
-userData.email || "";
-
-senderPhoto =
-userData.photo || "";
-
+const u = userSnap.data();
+senderName = u.name || "مستخدم";
+senderEmail = u.email || "";
+senderPhoto = u.photo || "";
 }
-
-}catch(err){
-
-console.log("خطأ جلب المستخدم",err);
-
-}
-
-// صورة
+}catch(e){}
 
 let avatarHTML = "👤";
 
 if(senderPhoto){
-
-avatarHTML = `
-<img src="${senderPhoto}"
-style="
-width:100%;
-height:100%;
-object-fit:cover;
-border-radius:50%;
-">
-`;
-
+avatarHTML = `<img src="${senderPhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
 }
 
-// آخر رسالة
-
-const lastMessage =
-chat.lastMessage || "اضغط لفتح المحادثة";
-
-// إضافة الرسالة
+const lastMessage = chat.lastMessage || "اضغط لفتح المحادثة";
 
 popupMessages.innerHTML += `
-
 <div class="message-item"
 onclick="openChat('${otherUserId}')">
 
-<div class="message-avatar">
-
-${avatarHTML}
-
-</div>
+<div class="message-avatar">${avatarHTML}</div>
 
 <div class="message-content">
-
-<h4>
-${senderName}
-</h4>
-
-<p>
-${lastMessage}
-</p>
-
-<small style="
-color:#64748b;
-font-size:12px;
-">
-${senderEmail}
-</small>
-
+<h4>${senderName}</h4>
+<p>${lastMessage}</p>
+<small>${senderEmail}</small>
 </div>
 
 </div>
-
 `;
-
 }
-
-}
-
-// عدد الرسائل
 
 msgCount.innerText = count;
 
-// فارغ
-
 if(count === 0){
-
-popupMessages.innerHTML = `
-
-<div class="empty">
-لا توجد رسائل حالياً
-</div>
-
-`;
-
+popupMessages.innerHTML = `<div class="empty">لا توجد رسائل حالياً</div>`;
 }
 
-}catch(error){
-
-console.log(error);
-
-popupMessages.innerHTML = `
-
-<div class="empty">
-حدث خطأ أثناء تحميل الرسائل
-</div>
-
-`;
-
+}catch(err){
+console.log(err);
+popupMessages.innerHTML = `<div class="empty">حدث خطأ في تحميل الرسائل</div>`;
 }
 
 }
 
 
-// 🔐 تسجيل الدخول
+// 🔐 تسجيل دخول
 onAuthStateChanged(auth, async (user)=>{
 
 if(!user){
@@ -444,36 +330,38 @@ window.location.href = "login.html";
 return;
 }
 
-// ⏳ تأخير بسيط (شكل احترافي)
-await new Promise(r => setTimeout(r, 800));
-
-// 🔥 تحميل البيانات
 await loadUser(user);
 await loadMyAds(user);
 await loadMessages(user);
 
-// ❌ إخفاء التحميل
 hideLoading();
 
 });
 
 
-// 🚪 تسجيل خروج
+// 🚪 خروج
 window.logout = function(){
-
 signOut(auth).then(()=>{
-
-alert("تم تسجيل الخروج");
 window.location.href = "login.html";
-
 });
-
 }
 
 
-// ➕ إنشاء إعلان
+// ➕ إعلان
 window.createAd = function(){
 window.location.href = "create-ads.html";
+}
+
+
+// 💰 رصيد
+window.addMoney = function(){
+alert("قريباً");
+}
+
+
+// ⚙️ تعديل
+window.editProfile = function(){
+alert("قريباً");
 }
 
 
@@ -483,15 +371,11 @@ window.location.href = "chat.html?uid=" + uid;
 }
 
 
-// 💰 رصيد
-window.addMoney = function(){
-alert("قريباً نظام الدفع");
-}
-
-
-// ⚙️ تعديل الحساب
-window.editProfile = function(){
-alert("قريباً تعديل الحساب");
+// 🔔 فتح/إغلاق الرسائل (مهم حتى لا يكسر الزر)
+window.toggleMessages = function(){
+const box = document.getElementById("messagesPopup");
+if(!box) return;
+box.style.display = (box.style.display === "block") ? "none" : "block";
 }
 
 </script>
