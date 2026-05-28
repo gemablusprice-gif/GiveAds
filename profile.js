@@ -1,16 +1,21 @@
-// فتح واغلاق نافذة الرسائل
+
+// 🔔 فتح وغلق صندوق الرسائل
 
 window.toggleMessages = function(){
 
 const popup =
 document.getElementById("messagesPopup");
 
+if(popup){
+
 popup.classList.toggle("show");
 
 }
 
+};
 
-// اغلاق عند الضغط خارج الجرس
+
+// اغلاق عند الضغط بالخارج
 
 window.addEventListener("click",(e)=>{
 
@@ -19,6 +24,8 @@ document.getElementById("messagesPopup");
 
 const bell =
 document.querySelector(".bell");
+
+if(!popup || !bell) return;
 
 if(
 !popup.contains(e.target) &&
