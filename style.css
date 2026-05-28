@@ -963,3 +963,12 @@ button{
 font-size:16px;
 
 }
+.btn-group{
+display:flex;
+gap:15px;
+flex-wrap:wrap;
+justify-content:center;
+}
+.btn + .btn{
+margin-right:15px;
+}
