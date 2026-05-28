@@ -715,3 +715,18 @@ display:none;
 .messages-popup.show{
 display:block;
 }
+.message-item.unread{
+background:#e0f2fe;
+border-right:4px solid #0ea5e9;
+position:relative;
+font-weight:bold;
+}
+
+.message-item.unread::after{
+content:"●";
+position:absolute;
+left:10px;
+top:10px;
+color:red;
+font-size:14px;
+}
