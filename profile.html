@@ -250,7 +250,7 @@ adsList.innerHTML = `
 }
 
 
-// 💬 تحميل الرسائل
+// 💬 تحميل الرسائل الحديثة
 
 async function loadMessages(user){
 
@@ -260,28 +260,82 @@ document.getElementById("popupMessages");
 const msgCount =
 document.getElementById("msgCount");
 
-const snap =
+// تحقق من العناصر
+
+if(!popupMessages || !msgCount) return;
+
+// شاشة تحميل
+
+popupMessages.innerHTML = `
+
+<div class="empty">
+جارٍ تحميل الرسائل...
+</div>
+
+`;
+
+try{
+
+// جلب المحادثات
+
+const chatsSnap =
 await getDocs(collection(db,"chats"));
 
 popupMessages.innerHTML = "";
 
 let count = 0;
 
-for (const docItem of snap.docs){
+// لا توجد محادثات
 
-const chat = docItem.data();
+if(chatsSnap.empty){
+
+popupMessages.innerHTML = `
+
+<div class="empty">
+لا توجد رسائل حالياً
+</div>
+
+`;
+
+msgCount.innerText = "0";
+
+return;
+
+}
+
+// loop
+
+for(const chatDoc of chatsSnap.docs){
+
+const chat = chatDoc.data();
+
+// تحقق من users
 
 if(
-chat.users &&
-chat.users.includes(user.uid)
-){
+!chat.users ||
+!Array.isArray(chat.users)
+) continue;
+
+// هل المستخدم داخل المحادثة
+
+if(chat.users.includes(user.uid)){
 
 count++;
+
+// المستخدم الآخر
 
 const otherUserId =
 chat.users.find(id => id !== user.uid);
 
-// 🔥 جلب بيانات المرسل
+// جلب بيانات المستخدم
+
+let senderName = "مستخدم";
+let senderEmail = "";
+let senderPhoto = "";
+
+// users collection
+
+try{
 
 const userRef =
 doc(db,"users",otherUserId);
@@ -289,12 +343,10 @@ doc(db,"users",otherUserId);
 const userSnap =
 await getDoc(userRef);
 
-let senderName = "مستخدم";
-let senderEmail = "";
-
 if(userSnap.exists()){
 
-const userData = userSnap.data();
+const userData =
+userSnap.data();
 
 senderName =
 userData.name || "مستخدم";
@@ -302,7 +354,41 @@ userData.name || "مستخدم";
 senderEmail =
 userData.email || "";
 
+senderPhoto =
+userData.photo || "";
+
 }
+
+}catch(err){
+
+console.log("خطأ جلب المستخدم",err);
+
+}
+
+// صورة
+
+let avatarHTML = "👤";
+
+if(senderPhoto){
+
+avatarHTML = `
+<img src="${senderPhoto}"
+style="
+width:100%;
+height:100%;
+object-fit:cover;
+border-radius:50%;
+">
+`;
+
+}
+
+// آخر رسالة
+
+const lastMessage =
+chat.lastMessage || "اضغط لفتح المحادثة";
+
+// إضافة الرسالة
 
 popupMessages.innerHTML += `
 
@@ -310,7 +396,9 @@ popupMessages.innerHTML += `
 onclick="openChat('${otherUserId}')">
 
 <div class="message-avatar">
-👤
+
+${avatarHTML}
+
 </div>
 
 <div class="message-content">
@@ -320,8 +408,15 @@ ${senderName}
 </h4>
 
 <p>
-${senderEmail}
+${lastMessage}
 </p>
+
+<small style="
+color:#64748b;
+font-size:12px;
+">
+${senderEmail}
+</small>
 
 </div>
 
@@ -333,9 +428,11 @@ ${senderEmail}
 
 }
 
+// عدد الرسائل
+
 msgCount.innerText = count;
 
-// لا توجد رسائل
+// فارغ
 
 if(count === 0){
 
@@ -343,6 +440,20 @@ popupMessages.innerHTML = `
 
 <div class="empty">
 لا توجد رسائل حالياً
+</div>
+
+`;
+
+}
+
+}catch(error){
+
+console.log(error);
+
+popupMessages.innerHTML = `
+
+<div class="empty">
+حدث خطأ أثناء تحميل الرسائل
 </div>
 
 `;
