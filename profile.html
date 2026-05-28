@@ -251,44 +251,79 @@ adsList.innerHTML = `
 
 
 // 💬 تحميل الرسائل
+
 async function loadMessages(user){
 
-const messagesList = document.getElementById("messagesList");
-const snap = await getDocs(collection(db,"chats"));
+const popupMessages =
+document.getElementById("popupMessages");
 
-messagesList.innerHTML = "";
+const msgCount =
+document.getElementById("msgCount");
 
-let found = false;
+const snap =
+await getDocs(collection(db,"chats"));
+
+popupMessages.innerHTML = "";
+
+let count = 0;
 
 snap.forEach((docItem)=>{
 
 const chat = docItem.data();
 
-if(chat.users && chat.users.includes(user.uid)){
+if(
+chat.users &&
+chat.users.includes(user.uid)
+){
 
-found = true;
+count++;
 
-const otherUser = chat.users.find(id => id !== user.uid);
+const otherUser =
+chat.users.find(id => id !== user.uid);
 
-messagesList.innerHTML += `
-<div class="ad">
-<p>💬 محادثة جديدة</p>
-<span>${otherUser}</span>
-<br><br>
-<button class="green" onclick="openChat('${otherUser}')">
-فتح المحادثة
-</button>
+popupMessages.innerHTML += `
+
+<div class="message-item"
+onclick="openChat('${otherUser}')">
+
+<div class="message-avatar">
+👤
 </div>
+
+<div class="message-content">
+
+<h4>
+محادثة جديدة
+</h4>
+
+<p>
+اضغط لفتح الرسائل
+</p>
+
+</div>
+
+</div>
+
 `;
 
 }
 
 });
 
-if(!found){
-messagesList.innerHTML = `
-<div class="empty">لا توجد رسائل حالياً</div>
+msgCount.innerText = count;
+
+// لا توجد رسائل
+
+if(count === 0){
+
+popupMessages.innerHTML = `
+
+<div class="empty">
+لا توجد رسائل حالياً
+</div>
+
 `;
+
 }
 
 }
