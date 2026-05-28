@@ -267,7 +267,7 @@ popupMessages.innerHTML = "";
 
 let count = 0;
 
-snap.forEach((docItem)=>{
+for (const docItem of snap.docs){
 
 const chat = docItem.data();
 
@@ -278,13 +278,36 @@ chat.users.includes(user.uid)
 
 count++;
 
-const otherUser =
+const otherUserId =
 chat.users.find(id => id !== user.uid);
+
+// 🔥 جلب بيانات المرسل
+
+const userRef =
+doc(db,"users",otherUserId);
+
+const userSnap =
+await getDoc(userRef);
+
+let senderName = "مستخدم";
+let senderEmail = "";
+
+if(userSnap.exists()){
+
+const userData = userSnap.data();
+
+senderName =
+userData.name || "مستخدم";
+
+senderEmail =
+userData.email || "";
+
+}
 
 popupMessages.innerHTML += `
 
 <div class="message-item"
-onclick="openChat('${otherUser}')">
+onclick="openChat('${otherUserId}')">
 
 <div class="message-avatar">
 👤
@@ -293,11 +316,11 @@ onclick="openChat('${otherUser}')">
 <div class="message-content">
 
 <h4>
-محادثة جديدة
+${senderName}
 </h4>
 
 <p>
-اضغط لفتح الرسائل
+${senderEmail}
 </p>
 
 </div>
@@ -308,7 +331,7 @@ onclick="openChat('${otherUser}')">
 
 }
 
-});
+}
 
 msgCount.innerText = count;
 
